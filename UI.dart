@@ -13,10 +13,6 @@ void initialize(){
   //Human     player 1;
   updateStatus(0,"Idle");  
   updateStatus(1,"Idle"); 
-  
-
-
-
   document.query('#sortBySuite').on.click.add((e) {
     fdb('Not implemented yet');
   });
@@ -24,7 +20,6 @@ void initialize(){
   document.query('#newHandButton').on.click.add((e){
     newHand();
   });
-
 }
 
 void updateStatus(int player, String status){
@@ -41,13 +36,12 @@ void updateStatus(int player, String status){
   document.query('$divStatus').innerHTML='Status: $status';
 }
 
-
 void fdb(String debugMsg){
   // short for 'feed debug buffer'
   if(debug){
-  Date theTime = new Date.now();
-  var debugBuffer=document.query('#debug').innerHTML;
-  document.query('#debug').innerHTML='$debugBuffer$theTime $debugMsg<br/>';
-  document.query('#debug').scrollByLines(9999999);
+    Date theTime = new Date.now();
+    var debugBuffer=document.query('#debug').innerHTML;
+    document.query('#debug').innerHTML='$debugBuffer$theTime $debugMsg<br/>';
+    document.query('#debug').scrollByLines(9999999);
   }
 }

@@ -3,13 +3,8 @@ void newHand(){
     nasty workaround (see Hand.dart:8)
   */
   Hand.notInDeck = '';
-  
   Hand playerHand = new Hand();
   Hand computerHand = new Hand();
-  
-  
-  
-  
   
   playerHand.player = 1;
   playerHand.serveHand();
@@ -22,11 +17,7 @@ void newHand(){
   }
 
   playerHand.evaluate();
-
   computerHand.evaluate();
-  
-  
-  
 }
 
 void unitTestNewHand(){
@@ -65,5 +56,4 @@ void unitTestNewHand(){
   playerHand.evaluate();
 
   computerHand.evaluate();
-  
 }

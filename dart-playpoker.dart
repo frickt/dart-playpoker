@@ -7,15 +7,11 @@
 #source('Card.dart');
 
 var version = '';
-var developmentStatus = 'lolol It actually does nothing but determining some hand values (see #Roadmap for details)';
+var developmentStatus = 'It actually does nothing but determining some hand values (see #Roadmap for details)';
 
 bool debug = true;
 
 void main() {
-
-
   initialize();
-
   newHand();
-  //unitTestNewHand();
 }
