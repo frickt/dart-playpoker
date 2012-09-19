@@ -82,48 +82,47 @@ Nasty workaround
 
   String evaluate(){
     Map<int,int> cardsMultiplicity = new Map();
-    List allSlots = [this.slot1.r,this.slot2.r,this.slot3.r,this.slot4.r,this.slot5.r];
+    List allRanks = [this.slot1.r,this.slot2.r,this.slot3.r,this.slot4.r,this.slot5.r];
     fdb('Starting hand eval...');
-    for (var x = 0; x<allSlots.length; x++) {
-      if(cardsMultiplicity[allSlots[x]] == null){
+    for (var x = 0; x<allRanks.length; x++) {
+      if(cardsMultiplicity[allRanks[x]] == null){
         //Create
-        cardsMultiplicity[allSlots[x]]=1;
+        cardsMultiplicity[allRanks[x]]=1;
         }
       else
       {
         //Update
-        cardsMultiplicity[allSlots[x]]++;
+        cardsMultiplicity[allRanks[x]]++;
       }
     }
 
-    int encodedMultiplicity = 0;
+    int encMultiplicity = 0;
     for( var x = 0; x<cardsMultiplicity.getValues().length; x++){
-      encodedMultiplicity+=pow(cardsMultiplicity.getValues()[x],2);
+      encMultiplicity+=pow(cardsMultiplicity.getValues()[x],2);
     }
 
-    fdb('Encoded multiplicity: $encodedMultiplicity');
+    fdb('Encoded multiplicity: $encMultiplicity');
 
     //Actual logic:
-    switch(encodedMultiplicity){
+    switch(encMultiplicity){
       case 5:
-      //this.hand='high card OR straight OR flush OR straight flush';
-      this.allOnes();
-      break;
+        this.allOnes();
+        break;
       case 7:
-      this.hand='Pair';
-      break;
+        this.hand='Pair';
+        break;
       case 11:
-      this.hand='Three of a kind';
-      break;
+        this.hand='Three of a kind';
+        break;
       case 9:
-      this.hand='Two pairs';
-      break;
+        this.hand='Two pairs';
+        break;
       case 13:
-      this.hand='Fullhouse';
-      break;
+        this.hand='Fullhouse';
+        break;
       case 17:
-      this.hand='Four of a kind';
-      break;
+        this.hand='Four of a kind';
+        break;
     }
 
     updateStatus(this.player,this.hand);
@@ -145,7 +144,7 @@ Nasty workaround
   });
 
   if(R[4]==R[0]+4){
-    if(this.isFlush()==true){
+    if(this.isFlush()){
       this.hand='Straight Flush';
     }
     else{
@@ -153,7 +152,7 @@ Nasty workaround
     }
   }
   else if (R[4]==14 && R[0]==2 && R[3]==5){
-    if(this.isFlush()==true){
+    if(this.isFlush()){
       this.hand='Straight Flush';
     }
     else{
@@ -171,27 +170,13 @@ Nasty workaround
   }
 
   bool isFlush(){
-    if(this.slot1.s==this.slot2.s){
-      if(this.slot2.s==this.slot3.s){
-        if(this.slot3.s==this.slot4.s){
-          if(this.slot4.s==this.slot5.s){
-            return true;
-          }
-          else{
-            return false;
-          }
-        }
-        else{
-          return false;
-        }
-      }
-      else{
+    List allSuites = [this.slot1.s,this.slot2.s,this.slot3.s,this.slot4.s,this.slot5.s];
+    for(var i=0;i<allSuites.length-1;i++){
+      if(allSuites[i]!=allSuites[i+1]){
         return false;
+        }
       }
-    }
-    else{
-      return false;
-    }
+    return true;
   }
 
   void sort(){}
