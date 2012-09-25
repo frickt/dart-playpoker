@@ -160,7 +160,7 @@ Nasty workaround
     }
   }
   else {
-    if (this.isFlush()==true){
+    if (this.isFlush()){
       this.hand='Flush';
     }
     else{
