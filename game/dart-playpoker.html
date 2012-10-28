@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>dart-playpoker</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" media="screen"/>
+    <link rel="stylesheet" href="style.css" media="screen"/>
+  </head>
+  <body>
+
+  <div class="container">
+  <h1>Let's play some poker!</h1>
+  <div class="row">
+    <div class="well span6">
+	    <div class="row">
+				<div id="c1" class="card span2"></div>
+				<div id="c2" class="card span2"></div>
+				<div id="c3" class="card span2"></div>
+				<div id="c4" class="card span2"></div>
+				<div id="c5" class="card span2"></div>
+	    </div>
+    </div>
+    </div>
+    <div class="row">
+      <div class="well span6">
+	      <div class="row">
+	        <div id="h1" class="card span2"></div>
+	        <div id="h2" class="card span2"></div>
+	        <div id="h3" class="card span2"></div>
+	        <div id="h4" class="card span2"></div>
+	        <div id="h5" class="card span2"></div>
+        </div>
+      </div>
+
+    </div>
+
+ <div class="row"> <div id="human" class="span6 alert alert-info"></div></div>
+
+    <button id="newHand" class="btn">New Hand (not implemented yet, pls reload page)</button>
+
+  </div>
+
+
+  </body>
+  <script type="text/javascript" type="bootstrap/js/bootstrap.min.js"></script>
+  <script type="application/dart" src="dart-playpoker.dart"></script>
+  <script src="http://dart.googlecode.com/svn/branches/bleeding_edge/dart/client/dart.js"></script>
+</html>
