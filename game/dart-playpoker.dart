@@ -6,11 +6,17 @@
 
 main(){
   init();
-  PokerEngine game = new PokerEngine();
-  game.serveHand();
 
-  query('#newHand').on.click.add(newHand(Event event){
-    // not implemented yet
+  Player player = new Player();
+  Player computer = new Player();
+
+  player.name="Human player";
+  computer.human=false;
+
+  newHand(player);
+
+  query('#newHand').on.click.add(function(Event event){
+    newHand(player);
   });
 
 
@@ -25,7 +31,14 @@ void init(){
     ..height='96px';
   }
 
+}
 
+newHand(Player player){
+  PokerEngine game = new PokerEngine();
+  game.serveHand(player);
+  game.showCards(player);
+  game.evaluateHand(player);
+  query("#human").text=player.handValue;
 
 }
 
