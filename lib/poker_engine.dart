@@ -8,8 +8,17 @@ class Player{
   String name;
   bool human;
   List<Card> hand = [];
+  List<Card> changing = [];
   String handValue;
   int pot = 10000;
+  int status = 0;
+
+  /*
+   * statuses:
+   * 0 = idle
+   * 1 = changing cards
+   * 2 = final
+   */
 
 }
 
@@ -41,7 +50,9 @@ class PokerEngine{
   List<Card> servedCards=[];
 
   serveHand(Player player){
-    player.hand = [];
+
+
+
     while(player.hand.length < 5){
         Card inCard = pickCard();
         if (beenServed(inCard) == false){
@@ -49,6 +60,9 @@ class PokerEngine{
           player.hand.add(inCard);
         }
       }
+
+    player.status++;
+
     }
 
 
@@ -185,7 +199,23 @@ class PokerEngine{
 
 
 
+
+
   }
 
+  changeCards(Player player){
+    for(var card in player.changing){
+      var rm = player.hand.indexOf(card);
+      player.hand.removeAt(rm);
 
+    }
+    this.serveHand(player);
+    this.showCards(player);
+    this.evaluateHand(player);
+    this.showdown(player);
+  }
+
+  showdown(Player player){
+    print('vai con lo showdown');
+  }
 }
