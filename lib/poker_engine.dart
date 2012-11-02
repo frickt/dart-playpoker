@@ -12,6 +12,7 @@ class Player{
   String handValue;
   int pot = 10000;
   int status = 0;
+  int encHand;
 
   /*
    * statuses:
@@ -106,6 +107,8 @@ class PokerEngine{
       encMultiplicity+=pow(cardsMultiplicity.values[x],2);
     }
 
+    player.encHand = encMultiplicity;
+
     switch(encMultiplicity){
       case 5:
         allOnes(player);
@@ -149,25 +152,31 @@ class PokerEngine{
     if(R[4]==R[0]+4){
       if(this.isFlush(player)){
         player.handValue='Straight Flush';
+        player.encHand=18;
       }
       else{
         player.handValue='Straight';
+        player.encHand=12;
       }
     }
     else if (R[4]==14 && R[0]==2 && R[3]==5){
       if(this.isFlush(player)){
         player.handValue='Straight Flush';
+        player.encHand=18;
       }
       else{
         player.handValue='Straight';
+        player.encHand=12;
       }
     }
     else {
       if (this.isFlush(player)){
         player.handValue='Flush';
+        player.encHand=14;
       }
       else{
         player.handValue='High card';
+        player.encHand=1;
       }
 
 
@@ -189,9 +198,16 @@ class PokerEngine{
 
 
   showCards(Player player){
-    List slots = ['h1','h2','h3','h4','h5'];
+    String prefix;
+    if(player.human){
+      prefix='h';
+    }
+    else{
+      prefix='c';
+    }
+    List slots = ['1','2','3','4','5'];
     for (var i = 0; i<5; i++){
-      query('#${slots[i]}').style
+      query('#$prefix${slots[i]}').style
       ..backgroundImage='url(${player.hand[i].cardImage()})'
       ..width='71px'
       ..height='96px';
@@ -212,10 +228,28 @@ class PokerEngine{
     this.serveHand(player);
     this.showCards(player);
     this.evaluateHand(player);
-    this.showdown(player);
+
   }
 
-  showdown(Player player){
-    print('vai con lo showdown');
+  showdown(Player player, Player computer){
+    print('${this.servedCards}');
+    print('${player.name}: ${player.handValue}');
+    print('${player.hand}');
+    print('${computer.name}: ${computer.handValue}');
+    print('${computer.hand}');
+    print('${this.servedCards.length}');
+    this.showCards(computer);
+  }
+
+  String compareHands(Player player, Player computer){
+    if(player.encHand>computer.encHand){
+      return 'You won :-)';
+    }
+    else if(player.encHand==computer.encHand){
+      return 'You both have the same kind so nobody won <em>(I know, pretty unfair, this comparing method should be improved!)</em>';
+    }
+    else{
+      return 'You lost :-(';
+    }
   }
 }

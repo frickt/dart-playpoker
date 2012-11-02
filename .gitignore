@@ -1,2 +1,5 @@
 
 .DS_Store
+.children
+.project
+pubspec.lock

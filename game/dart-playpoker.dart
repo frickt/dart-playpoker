@@ -10,17 +10,20 @@ main(){
   Player computer = new Player();
 
   player.name="Human player";
+  player.human=true;
+
+  computer.name="Computer";
   computer.human=false;
 
 
-  init(player);
+  init(player,computer);
   Map toggled = initCardSelection(player);
 
 
-  newHand(player,toggled);
+  newHand(player,computer,toggled);
 
   query('#newHand').on.click.add(function(Event event){
-    newHand(player,toggled);
+    newHand(player,computer,toggled);
 
   });
 
@@ -28,8 +31,8 @@ main(){
 
 }
 
-void init(player){
-  List slots = ['c1','c2','c3','c4','c5','h1','h2','h3','h4','h5'];
+void init(Player player, Player computer){
+  List<String> slots = ['c1','c2','c3','c4','c5','h1','h2','h3','h4','h5'];
   for (var slot in slots){
     query('#$slot').style
     ..backgroundImage='url(img/deck.png)'
@@ -39,11 +42,12 @@ void init(player){
 
 }
 
-newHand(Player player, Map toggled){
-  init(player);
+newHand(Player player, Player computer, Map toggled){
+  init(player,computer);
 
   player.status = 0;
   player.hand=[];
+  computer.hand=[];
   player.changing=[];
 
   resetCardsPosition(toggled);
@@ -52,7 +56,11 @@ newHand(Player player, Map toggled){
   game.serveHand(player);
   game.showCards(player);
   game.evaluateHand(player);
-  query("#human").text=player.handValue;
+
+  game.serveHand(computer);
+  game.evaluateHand(computer);
+
+  query("#status").innerHTML=updateStatus(player,computer,game);
 
 
   Function bindChangeFunction;
@@ -62,10 +70,11 @@ newHand(Player player, Map toggled){
     resetCardsPosition(toggled);
     query('#change').style.visibility='hidden';
     query('#change').style.display='none';
-    query("#human").text=player.handValue;
+    query("#status").innerHTML=updateStatus(player,computer,game);
+    game.showdown(player,computer);
     };
 
-   query('#change').on.click.remove(bindChangeFunction);
+  query('#change').on.click.remove(bindChangeFunction);
   query('#change').on.click.add(bindChangeFunction );
 
   query('#change').style.visibility='hidden';
@@ -158,5 +167,16 @@ toggleCard(Player player, int slot, Map toggled, Map slots){
     ..display="none";
   }
 
+  }
+}
+
+String updateStatus(Player player, Player computer, PokerEngine game){
+  switch(player.status){
+    case 0:
+      return '<p>Idle<p>';
+    case 1:
+      return '<p>You have a <b>${player.handValue}</b>. Click on cards you want to change or jump to showdown.</p><p>&nbsp;</p>';
+    case 2:
+      return '<p>You have a <b>${player.handValue}</b>, your opponent has a <b>${computer.handValue}.</b></p><p>${game.compareHands(player,computer)}</p>';
   }
 }

@@ -1,5 +1,5 @@
-#import('dart:math');
-#import('../lib/poker_engine.dart');
+import 'dart:math';
+import '../lib/poker_engine.dart';
 
 main(){
   PokerEngine game = new PokerEngine();
