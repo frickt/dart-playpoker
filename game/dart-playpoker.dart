@@ -51,6 +51,8 @@ newHand(Player player, Player computer, Map toggled){
   player.changing=[];
 
   resetCardsPosition(toggled);
+  query('#showdown').style.visibility='visible';
+  query('#showdown').style.display='inline';
 
   PokerEngine game = new PokerEngine();
   game.serveHand(player);
@@ -61,6 +63,17 @@ newHand(Player player, Player computer, Map toggled){
   game.evaluateHand(computer);
 
   query("#status").innerHTML=updateStatus(player,computer,game);
+
+  query("#showdown").on.click.add(function(Event event){
+    player.status++;
+    game.showdown(player, computer);
+    //resetCardsPosition(toggled);
+    query('#change').style.visibility='hidden';
+    query('#change').style.display='none';
+    query("#status").innerHTML=updateStatus(player,computer,game);
+    query('#showdown').style.visibility='hidden';
+    query('#showdown').style.display='none';
+  });
 
 
   Function bindChangeFunction;

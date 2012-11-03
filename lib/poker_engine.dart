@@ -232,12 +232,6 @@ class PokerEngine{
   }
 
   showdown(Player player, Player computer){
-    print('${this.servedCards}');
-    print('${player.name}: ${player.handValue}');
-    print('${player.hand}');
-    print('${computer.name}: ${computer.handValue}');
-    print('${computer.hand}');
-    print('${this.servedCards.length}');
     this.showCards(computer);
   }
 
