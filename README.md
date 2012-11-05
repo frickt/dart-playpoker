@@ -4,6 +4,8 @@ This is just an experiment to approach the new Dart programming language.
 
 It ain't supposed to be funny, educational, working fine, etc :-)
 
+[Play hosted javascript version](http://dart.claudiodangelis.it/dart-playpoker/game/dart-playpoker.html)
+
 ##Overview
 
 Please refer to [project page](http://www.claudiodangelis.it/projects/dart-playpoker)
