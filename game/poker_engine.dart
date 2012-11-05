@@ -1,9 +1,3 @@
-library poker_engine;
-
-import "dart:math";
-import "dart:html";
-
-
 class Player{
   String name;
   bool human;
@@ -13,14 +7,6 @@ class Player{
   int pot = 10000;
   int status = 0;
   int encHand;
-
-  /*
-   * statuses:
-   * 0 = idle
-   * 1 = changing cards
-   * 2 = final
-   */
-
 }
 
 class Card{
@@ -45,15 +31,25 @@ class Card{
 
   String cardImage() => 'cards/${suiteNames[this.s][0].toLowerCase()}${this.r}.png';
 
+  operator >(Card other) {
+    if ( this.r > other.r){
+    return true;
+  }
+  else if (this.r == other.r){
+    if ( this.s > other.s){
+      return true;
+      }
+    }
+  else{
+    return false;
+  }
+  }
 }
 
 class PokerEngine{
   List<Card> servedCards=[];
 
   serveHand(Player player){
-
-
-
     while(player.hand.length < 5){
         Card inCard = pickCard();
         if (beenServed(inCard) == false){
@@ -63,8 +59,7 @@ class PokerEngine{
       }
 
     player.status++;
-
-    }
+   }
 
 
   Card pickCard(){
@@ -103,8 +98,9 @@ class PokerEngine{
     }
 
     int encMultiplicity=0;
-    for( var x = 0; x<cardsMultiplicity.length; x++){
-      encMultiplicity+=pow(cardsMultiplicity.values[x],2);
+
+    for (var multi in cardsMultiplicity.values){
+      encMultiplicity+=pow(multi,2);
     }
 
     player.encHand = encMultiplicity;
@@ -131,7 +127,6 @@ class PokerEngine{
     }
 
     return player.handValue;
-
 
   }
 
@@ -178,10 +173,7 @@ class PokerEngine{
         player.handValue='High card';
         player.encHand=1;
       }
-
-
     }
-
   }
 
 
@@ -195,44 +187,19 @@ class PokerEngine{
     return true;
   }
 
-
-
-  showCards(Player player){
-    String prefix;
-    if(player.human){
-      prefix='h';
-    }
-    else{
-      prefix='c';
-    }
-    List slots = ['1','2','3','4','5'];
-    for (var i = 0; i<5; i++){
-      query('#$prefix${slots[i]}').style
-      ..backgroundImage='url(${player.hand[i].cardImage()})'
-      ..width='71px'
-      ..height='96px';
-    }
-
-
-
-
-
-  }
-
   changeCards(Player player){
     for(var card in player.changing){
       var rm = player.hand.indexOf(card);
       player.hand.removeAt(rm);
-
     }
-    this.serveHand(player);
-    this.showCards(player);
-    this.evaluateHand(player);
 
+    this.serveHand(player);
+    showCards(player);
+    this.evaluateHand(player);
   }
 
   showdown(Player player, Player computer){
-    this.showCards(computer);
+    showCards(computer);
   }
 
   String compareHands(Player player, Player computer){
@@ -240,10 +207,98 @@ class PokerEngine{
       return 'You won :-)';
     }
     else if(player.encHand==computer.encHand){
-      return 'You both have the same kind so nobody won <em>(I know, pretty unfair, this comparing method should be improved!)</em>';
+      switch(player.encHand){
+        case 1:
+          return this.compareHighCard(player,computer);
+        case 7:
+          return this.comparePair(player,computer);
+      }
     }
     else{
       return 'You lost :-(';
     }
   }
+
+  compareHighCard(Player player, Player computer) {
+
+    Card playerMax = new Card(0,0);
+    Card computerMax = new Card(0,0);
+
+    for(var card in player.hand){
+      if(card>playerMax){
+        playerMax = card;
+      }
+    }
+
+    for (var card in computer.hand){
+      if(card>computerMax){
+        computerMax = card;
+      }
+    }
+
+    if(playerMax>computerMax){
+      return 'You win';
+    }
+    else{
+      return 'You lost';
+    }
+  }
+  comparePair(Player player,Player computer){
+
+    Map playerPair= new Map();
+    for (var card in player.hand){
+      if(playerPair[card.r]==null){
+        playerPair[card.r]=[card];
+      }
+      else{
+        playerPair[card.r].add(card);
+      }
+    }
+
+    Map computerPair= new Map();
+    for (var card in computer.hand){
+      if(computerPair[card.r]==null){
+        computerPair[card.r]=[card];
+      }
+      else{
+        computerPair[card.r].add(card);
+      }
+    }
+
+
+
+    int playerPairRank;
+    List playerPairValue = [];
+    playerPair.forEach((k,v){
+      if(v.length==2){
+        playerPairRank=k;
+        playerPairValue=v;
+      }
+    });
+
+    int computerPairRank;
+    List computerPairValue = [];
+    computerPair.forEach((k,v){
+      if(v.length==2){
+        computerPairRank=k;
+        computerPairValue=v;
+      }
+    });
+
+
+    if(playerPairRank>computerPairRank){
+      return 'You have higher pair, you won :-)';
+    }
+    else if(playerPairRank<computerPairRank){
+      return 'You have lower pair, you lost :-(';
+    }
+    else{
+      for (var searchThree in playerPairValue){
+        if(searchThree.s==3){return 'You have Spades, you won.';}
+        return 'Computer has Spades, you lost.';
+      }
+    }
+
+  }
+
 }
