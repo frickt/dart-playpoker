@@ -18,9 +18,8 @@ class Card{
   var rankNames = ['None','None', '2', '3', '4', '5', '6', '7','8', '9', '10', 'Jack', 'Queen', 'King','Ace'];
 
 
-  Card(this.s,this.r){
-    //print('Served a ${this.nameOfCard()}');
-
+  Card(this.s,this.r) {
+    print(nameOfCard());
   }
 
   String nameOfCard(){
@@ -43,6 +42,24 @@ class Card{
   else{
     return false;
   }
+  }
+
+  operator <(Card other) {
+    if ( this.r < other.r){
+    return true;
+  }
+  else if (this.r == other.r){
+    if ( this.s < other.s){
+      return true;
+      }
+    }
+  else{
+    return false;
+  }
+  }
+
+  operator ==(Card other) {
+    if (this.r == other.r && this.s == other.s) {return true;} else {return false;}
   }
 }
 
