@@ -1,3 +1,5 @@
+part of playpoker;
+
 class Player{
   String name;
   bool human;
@@ -7,6 +9,8 @@ class Player{
   int pot = 10000;
   int status = 0;
   int encHand;
+
+  PokerEngine gameInstance;
 }
 
 class Card{
@@ -18,9 +22,7 @@ class Card{
   var rankNames = ['None','None', '2', '3', '4', '5', '6', '7','8', '9', '10', 'Jack', 'Queen', 'King','Ace'];
 
 
-  Card(this.s,this.r) {
-    print(nameOfCard());
-  }
+  Card(this.s,this.r) { }
 
   String nameOfCard(){
     return '${rankNames[this.r]} of ${suiteNames[this.s]}';
@@ -74,8 +76,6 @@ class PokerEngine{
           player.hand.add(inCard);
         }
       }
-
-    player.status++;
    }
 
 
@@ -216,6 +216,7 @@ class PokerEngine{
   }
 
   showdown(Player player, Player computer){
+    //player.status++;
     showCards(computer);
   }
 

@@ -1,21 +1,32 @@
+library playpoker;
+
 import 'dart:html';
 import 'dart:math';
 
-part 'gui.dart';
-part 'poker_engine.dart';
+part '../lib/gui.dart';
+part '../lib/poker_engine.dart';
 
 main(){
+
   Player player = new Player();
   Player computer = new Player();
+
   player.name="Human player";
   player.human=true;
   computer.name="Computer";
   computer.human=false;
+
   init(player,computer);
+
   Map toggled = initCardSelection(player);
   newHand(player,computer,toggled);
+
   query('#newHand').on.click.add(function(Event event){
     newHand(player,computer,toggled);
+  });
+
+  query('#showdown').on.click.add(function(Event event){
+    manageShowdownButton(player, computer, toggled, clicked: true);
   });
 }
 
@@ -29,7 +40,7 @@ void init(Player player, Player computer){
   }
 }
 
-newHand(Player player, Player computer, Map toggled){
+void newHand(Player player, Player computer, Map toggled){
   init(player,computer);
   player.status = 0;
 
@@ -38,11 +49,13 @@ newHand(Player player, Player computer, Map toggled){
   player.changing=[];
 
   resetCardsPosition(toggled);
+
   query('#showdown').style.visibility='visible';
   query('#showdown').style.display='inline';
 
   PokerEngine game = new PokerEngine();
   game.serveHand(player);
+  player.status++;
   showCards(player);
   game.evaluateHand(player);
 
@@ -51,35 +64,9 @@ newHand(Player player, Player computer, Map toggled){
 
   query("#status").innerHTML=updateStatus(player,computer,game);
 
-  query("#showdown").on.click.add(function(Event event){
-    player.status++;
-    game.showdown(player, computer);
-    //resetCardsPosition(toggled);
-    query('#change').style.visibility='hidden';
-    query('#change').style.display='none';
-    query("#status").innerHTML=updateStatus(player,computer,game);
-    query('#showdown').style.visibility='hidden';
-    query('#showdown').style.display='none';
-  });
+  player.gameInstance = game;
 
+  manageShowdownButton(player, computer, toggled, game: game );
 
-  Function bindChangeFunction;
-  bindChangeFunction = (e){
-    query('#change').on.click.remove(bindChangeFunction);
-    game.changeCards(player);
-    resetCardsPosition(toggled);
-    query('#change').style.visibility='hidden';
-    query('#change').style.display='none';
-    query("#status").innerHTML=updateStatus(player,computer,game);
-    game.showdown(player,computer);
-    };
-
-  query('#change')
-    ..on.click.add(bindChangeFunction )
-    ..style.visibility='hidden'
-    ..style.display='none';
-
-  for(var i = 0; i < 5; i++){
-    toggled[i] = false;
-  }
+  for(var i = 0; i < 5; i++)  toggled[i] = false;
 }

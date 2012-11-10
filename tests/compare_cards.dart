@@ -1,5 +1,5 @@
 import "dart:math";
-part '../game/poker_engine.dart';
+part 'file:/Users/dawson/workspace/github/dart-playpoker/lib/poker_engine.dart';
 
 main(){
 
