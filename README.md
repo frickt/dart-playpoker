@@ -18,6 +18,7 @@ Please refer to [project page](http://www.claudiodangelis.it/projects/dart-playp
  - Give the computer user a **brain**
  - Calculate **partial hand values** (required for previous item)
  - _Librarify_ the whole thing in order to make its parts reusable
+ - Show game stats
  
  
 ## Credits & License
@@ -27,7 +28,7 @@ Cards designed by [Susan Kare](http://www.jfitz.com/cards/) for Microsoft.
 
 Game interface uses [Twitter Bootstrap](twitter.github.com/bootstrap/).
 
-Special thanks to guys of #dart on _freenode.net_ .
+Special thanks to guys of #dart on _freenode.net_ and @gdifonzo.
 
 I am [Claudio "Dawson" d'Angelis](http://www.claudiodangelis.it/about).
 

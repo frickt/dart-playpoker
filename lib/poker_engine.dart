@@ -41,9 +41,7 @@ class Card{
       return true;
       }
     }
-  else{
-    return false;
-  }
+  return false;
   }
 
   operator <(Card other) {
@@ -55,13 +53,12 @@ class Card{
       return true;
       }
     }
-  else{
-    return false;
-  }
+  return false;
   }
 
   operator ==(Card other) {
-    if (this.r == other.r && this.s == other.s) {return true;} else {return false;}
+    if (this.r == other.r && this.s == other.s) return true;
+    return false;
   }
 }
 
@@ -83,12 +80,7 @@ class PokerEngine{
     int  randomSuite, randomRank;
     var rnd = new Random();
     randomSuite = rnd.nextInt(4);
-    while(true){
-      randomRank = rnd.nextInt(15);
-      if(randomRank>1){
-        break;
-      }
-    }
+    randomRank = 2 + rnd.nextInt(13);
 
     Card giveCard = new Card(randomSuite,randomRank);
     return giveCard;
