@@ -30,7 +30,7 @@ class Card{
 
   String toString() => this.nameOfCard();
 
-  String cardImage() => 'cards/${suiteNames[this.s][0].toLowerCase()}${this.r}.png';
+  String cardImage() => 'web/cards/${suiteNames[this.s][0].toLowerCase()}${this.r}.png';
 
   operator >(Card other) {
     if ( this.r > other.r){

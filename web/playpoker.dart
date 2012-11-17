@@ -34,7 +34,7 @@ void init(Player player, Player computer){
   List<String> slots = ['c1','c2','c3','c4','c5','h1','h2','h3','h4','h5'];
   for (var slot in slots){
     query('#$slot').style
-    ..backgroundImage='url(img/deck.png)'
+    ..backgroundImage='url(web/img/deck.png)'
     ..width='71px'
     ..height='96px';
   }
