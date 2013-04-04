@@ -1,5 +1,9 @@
-name: dart-playpoker
-version: 0.2.5
-description: A simplified of the Poker game written in Dart.
-author: Claudio Dawson d'Angelis @daw___
+name: dart_playpoker
+version: 0.2.6
+author: Claudio d'Angelis
+description: A simplified version of Poker game written in Dart.
 homepage: http://www.claudiodangelis.it/projects/dart-playpoker
+dependencies:
+  browser: any
+dev_dependencies:
+  unittest: any
