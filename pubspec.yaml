@@ -5,3 +5,5 @@ description: A simplified version of Poker game written in Dart.
 homepage: http://www.claudiodangelis.it/projects/dart-playpoker
 dependencies:
   browser: any
+dev_dependencies:
+  unittest: any

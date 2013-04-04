@@ -1,5 +1,8 @@
 # dart-playpoker
 
+[![Build Status](https://drone.io/github.com/claudiodangelis/dart-playpoker/status.png)](https://drone.io/github.com/claudiodangelis/dart-playpoker/latest)
+
+
 This is just an experiment to approach the new Dart programming language.
 
 It ain't supposed to be funny, educational, working fine, etc :-)
@@ -8,16 +11,15 @@ It ain't supposed to be funny, educational, working fine, etc :-)
 
 ##Overview
 
-Please refer to [project page](http://www.claudiodangelis.it/projects/dart-playpoker)
+Please refer to [project page](http://www.claudiodangelis.com/projects/dart-playpoker)
 
 ## Roadmap
 
  - A per-hand comparing method called when players share the same hand kind
- - Fix some random bugs, improve code and make it well **structured**
+ - Fix some random bugs
  - Build a **betting** system
  - Give the computer user a **brain**
  - Calculate **partial hand values** (required for previous item)
- - _Librarify_ the whole thing in order to make its parts reusable
  - Show game stats
  
  

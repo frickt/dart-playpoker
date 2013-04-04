@@ -9,7 +9,6 @@ class Game {
   List<Card> servedCards=[];
 
   Player createHuman() {
-    print("Creating the human player");
     Player h = new Player();
     h.changing=[];
     h.hand=[];
@@ -19,13 +18,11 @@ class Game {
 
   Player createComputer() {
     Player c = createHuman();
-    print("Assigning human=false to player");
     c.human=false;
     return c;
   }
 
   void init() {
-    print("Resetting initial values");
     state = 0;
     servedCards=[];
     human.hand=[];
@@ -66,21 +63,22 @@ class Game {
 
 
   // Evaluation!
+  // TODO: 1) async 2) do things faster by avoiding temporary mapping (not sure)
   String evaluateHand(Player player){
-    Map<int,int> cardsMultiplicity = new Map();
+    Map<int,int> cardsMultiplicities = new Map();
     for(var card in player.hand){
-      if(cardsMultiplicity[card.r]==null){
-        cardsMultiplicity[card.r]=1;
+      if(cardsMultiplicities[card.r]==null){
+        cardsMultiplicities[card.r]=1;
       }
       else{
-        cardsMultiplicity[card.r]++;
+        cardsMultiplicities[card.r]++;
       }
     }
 
     int encMultiplicity=0;
 
-    for (var multi in cardsMultiplicity.values){
-      encMultiplicity+=pow(multi,2);
+    for (var multiplicity in cardsMultiplicities.values){
+      encMultiplicity+=pow(multiplicity,2);
     }
 
     player.encHand = encMultiplicity;
@@ -93,16 +91,16 @@ class Game {
         player.handValue='Pair';
         break;
       case 11:
-        player.handValue='Three of a kind';
+        player.handValue='Three Of A Kind';
         break;
       case 9:
-        player.handValue='Two pairs';
+        player.handValue='Two Pairs';
         break;
       case 13:
         player.handValue='Fullhouse';
         break;
       case 17:
-        player.handValue='Four of a kind';
+        player.handValue='Four Of A Kind';
         break;
     }
 
@@ -110,7 +108,7 @@ class Game {
 
   }
 
-  allOnes(Player player){
+  void allOnes(Player player){
     List R = [player.hand[0].r,player.hand[1].r,player.hand[2].r,player.hand[3].r,player.hand[4].r];
     R.sort((a,b) {
       if (a == b) {
@@ -150,7 +148,7 @@ class Game {
         player.encHand=14;
       }
       else{
-        player.handValue='High card';
+        player.handValue='High Card';
         player.encHand=1;
       }
     }
@@ -167,6 +165,108 @@ class Game {
     return true;
   }
 
+
+  // Comparison methods
+  Map compareHands() {
+    if(human.encHand>computer.encHand) {
+      return {"humanWinner":true,"reason":"You have a higher hand."};
+    } else if(human.encHand==computer.encHand) {
+      //TODO: same hand comparison
+      switch(human.encHand) {
+        case 1:
+          return compareHighCard();
+        case 7:
+          return comparePair();
+      }
+    }
+
+    return {"humanWinner":false,"reason":"You have a lower hand."};
+  }
+
+  // Same hand comparison
+  Map compareHighCard() {
+
+    // Dummy cards to please max detecting
+    Card playerMax = new Card(0,0);
+    Card computerMax = new Card(0,0);
+
+    for(var card in human.hand){
+      if(card>playerMax){
+        playerMax = card;
+      }
+    }
+
+    for (var card in computer.hand){
+      if(card>computerMax){
+        computerMax = card;
+      }
+    }
+
+    if(playerMax>computerMax){
+      return {"humanWinner":true,"reason":"You have a higher High Card"};
+    }
+    else{
+      return {"humanWinner":false,"reason":"You have a lower High Card"};
+    }
+
+  }
+  Map comparePair() {
+    Map playerPair= new Map();
+    for (var card in human.hand){
+      if(playerPair[card.r]==null){
+        playerPair[card.r]=[card];
+      }
+      else{
+        playerPair[card.r].add(card);
+      }
+    }
+
+    Map computerPair= new Map();
+    for (var card in computer.hand){
+      if(computerPair[card.r]==null){
+        computerPair[card.r]=[card];
+      }
+      else{
+        computerPair[card.r].add(card);
+      }
+    }
+
+    int playerPairRank;
+    List playerPairValue = [];
+    playerPair.forEach((k,v){
+      if(v.length==2){
+        playerPairRank=k;
+        playerPairValue=v;
+      }
+    });
+
+    int computerPairRank;
+    List computerPairValue = [];
+    computerPair.forEach((k,v){
+      if(v.length==2){
+        computerPairRank=k;
+        computerPairValue=v;
+      }
+    });
+
+
+    if(playerPairRank>computerPairRank){
+      return {"humanWinner":true,"reason":"You have a higher Pair."};
+    }
+    else if(playerPairRank<computerPairRank){
+      return {"humanWinner":false,"reason":"You have a lower Pair."};
+    }
+    else{
+      bool isSpades = false;
+      for (var searchSpades in playerPairValue){
+        if(searchSpades.s==3) isSpades = true;
+      }
+      if(isSpades) {
+        return {"humanWinner":true,"reason":"You have the card of Spades."};
+      }
+      return {"humanWinner":false,"reason":"Computer has the card of Spades."};
+    }
+  }
 
   // State switchers
   void state0() {
@@ -186,7 +286,7 @@ class Game {
   }
 
   void state2() {
-    print("You have to change your cards");
+    // You are changin your cards
     state=2;
     // remove cards
     for ( Card card in human.changing ) {
@@ -201,8 +301,8 @@ class Game {
   }
 
   void state3() {
+    // Showdown
     state=3;
-    print("You have to show down");
     Gui.showCards(this, showdown:true);
     Gui.resetCardPosition();
     Gui.hideShowdownButton();
@@ -213,8 +313,8 @@ class Game {
 }
 
 class Card {
-  // r = rank
   // s = suite
+  // r = rank
   int r,s;
 
   var suiteNames = ['Clubs','Diamonds','Hearts','Spades'];
