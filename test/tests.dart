@@ -52,12 +52,34 @@ main() {
     new Card(2,8),
     new Card(1,13)];
 
+  List<Card> twoPairs3and9 = [
+    new Card(0,3),
+    new Card(1,3),
+    new Card(0,9),
+    new Card(2,9),
+    new Card(1,5)];
+
+  List<Card> twoPairs3and9spades = [
+    new Card(0,3),
+    new Card(1,3),
+    new Card(1,9),
+    new Card(3,9),
+    new Card(1,5)];
+
+
   List<Card> threeK = [
     new Card(0,13),
     new Card(1,13),
     new Card(2,13),
     new Card(3,8),
     new Card(3,2)];
+
+  List<Card> three5 = [
+    new Card(0,5),
+    new Card(1,5),
+    new Card(2,5),
+    new Card(0,14),
+    new Card(1,9)];
 
   List<Card> fourOfAKindAce = [
     new Card(0,14),
@@ -66,11 +88,22 @@ main() {
     new Card(3,14),
     new Card(0,5)];
 
+  List<Card> straight = [
+    new Card(0,10),
+    new Card(1,14),
+    new Card(1,12),
+    new Card(0,11),
+    new Card(2,13)];
+
   group('Cards',(){
     //TODO
   });
 
   test("Hand values",(){
+
+    assignHands(g, straight, highCard10Diamonds);
+    expect(g.human.handValue, equals("Straight"));
+
     assignHands(g, pair2clubs2hearts, highCard10Diamonds);
     expect(g.human.handValue, equals("Pair"));
     expect(g.computer.handValue, equals("High Card"));
@@ -144,9 +177,41 @@ main() {
       });
     });
 
+    group('Two Pairs',(){
+      test('Human wins',(){
+        assignHands(g,twoPairs3and9,twoPairs4and8);
+        expect(g.compareHands(), equals({"humanWinner":true, "reason":"You have a higher Two Pairs."}));
+      });
 
-    //TODO: Two Pairs
-    //TODO: Three Of A Kind
+      test('Computer wins',(){
+        assignHands(g, twoPairs4and8, twoPairs3and9);
+        expect(g.compareHands(), equals({"humanWinner":false, "reason":"You have a lower Two Pairs."}));
+      });
+
+      test('Player wins because has Spades',(){
+        assignHands(g,twoPairs3and9spades, twoPairs3and9);
+        expect(g.compareHands(), equals(
+            {"humanWinner":true, "reason":"You have the card of Spades."}
+            ));
+
+      });
+    });
+
+    group('Three Of A Kind',(){
+      test('Human wins',(){
+        assignHands(g, threeK, three5);
+        expect(g.compareHands(),equals(
+            {"humanWinner":true, "reason":"You have a higher Three Of A Kind."}
+        ));
+      });
+      test('Computer wins',(){
+        assignHands(g, three5, threeK);
+        expect(g.compareHands(),equals(
+            {"humanWinner":false, "reason":"You have a lower Three Of A Kind."}
+        ));
+      });
+    });
+
     //TODO: Fullhouse
     //TODO: Four Of A Kind
     //TODO: Straights

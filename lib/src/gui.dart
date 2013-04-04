@@ -2,7 +2,6 @@ part of playpoker;
 
 class Gui{
   //TODO: group `query() statements`
-
   static Map<String,bool> toggled = {
     "h1" : false,
     "h2" : false,
@@ -12,12 +11,10 @@ class Gui{
     };
 
   static void init(Game game) {
-    print("Initializing");
-
     // Initialization of poker engine
     game.init();
 
-    //TODO: lol, cleaner
+    //TODO: clear
     toggled["h1"]=false;
     toggled["h2"]=false;
     toggled["h3"]=false;
@@ -34,20 +31,17 @@ class Gui{
       ..width='71px'
       ..height='96px';
     }
-
     resetCardPosition();
   }
 
   static void showCards(Game game, {bool showdown:false}) {
     //TODO: group these loops
-
     for(var i=0; i<5;i++){
       query('#h${i+1}').style
       ..backgroundImage='url(${game.human.hand[i].cardImage()})'
       ..width='71px'
       ..height='96px';
       }
-
 
     if(showdown){
       for(var i=0; i<5;i++){
@@ -57,17 +51,12 @@ class Gui{
         ..height='96px';
         }
     }
-
-
   }
 
   static void toggleAndSelect(Game game, int slot){
     // Note to self: Card index == $slot - 1
     //TODO: simplify logic
     //TODO: remove 4-cards-limit warning if useless
-
-    print(toggled);
-
     int margin;
     if(Gui.toggled["h$slot"]) {
       // Already selected
@@ -100,9 +89,18 @@ class Gui{
     }
 
     query("#h$slot").style.marginTop="-${margin}px";
-    print("You want to change ${game.human.hand[slot-1]}");
-    print("Here's your list of cards you want to change:");
-    print(game.human.changing);
+  }
+
+  static String generateVerboseVerdict(Map results) {
+    String tmp;
+    if(results["humanWinner"]){
+      tmp="you won ";
+    } else {
+      tmp="computer won ";
+    }
+
+    tmp=tmp+"because "+results["reason"];
+    return tmp;
   }
 
   static void updateStatusBar(String msg){
@@ -119,7 +117,6 @@ class Gui{
     query('#h5').style.marginTop='0px';
 
   }
-
 
   static void hideShowdownButton() {
     query("#showdown").style

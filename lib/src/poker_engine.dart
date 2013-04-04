@@ -1,11 +1,10 @@
 part of playpoker;
 
 class Game {
-  int state;
 
+  int state;
   Player human;
   Player computer;
-
   List<Card> servedCards=[];
 
   Player createHuman() {
@@ -41,7 +40,6 @@ class Game {
       }
    }
 
-
   Card pickCard(){
     int  randomSuite, randomRank;
     var rnd = new Random();
@@ -60,7 +58,6 @@ class Game {
     }
     return false;
   }
-
 
   // Evaluation!
   // TODO: 1) async 2) do things faster by avoiding temporary mapping (not sure)
@@ -103,24 +100,12 @@ class Game {
         player.handValue='Four Of A Kind';
         break;
     }
-
     return player.handValue;
-
   }
 
   void allOnes(Player player){
     List R = [player.hand[0].r,player.hand[1].r,player.hand[2].r,player.hand[3].r,player.hand[4].r];
-    R.sort((a,b) {
-      if (a == b) {
-        return 0;
-      }
-      else if (a > b) {
-        return 1;
-      }
-      else {
-        return -1;
-      }
-    });
+    R.sort();
 
     if(R[4]==R[0]+4){
       if(this.isFlush(player)){
@@ -169,7 +154,7 @@ class Game {
   // Comparison methods
   Map compareHands() {
     if(human.encHand>computer.encHand) {
-      return {"humanWinner":true,"reason":"You have a higher hand."};
+      return {"humanWinner":true,"reason":"you have a higher hand."};
     } else if(human.encHand==computer.encHand) {
       //TODO: same hand comparison
       switch(human.encHand) {
@@ -177,22 +162,30 @@ class Game {
           return compareHighCard();
         case 7:
           return comparePair();
+        case 9:
+          return compareTwoPairs();
+        case 11:
+          return compareThreeOfAKind();
+
+        //TODO: Fullhouse
+        //TODO: Four Of A Kind
+        //TODO: Straights
+
       }
     }
-
-    return {"humanWinner":false,"reason":"You have a lower hand."};
+    return {"humanWinner":false,"reason":"you have a lower hand."};
   }
 
   // Same hand comparison
   Map compareHighCard() {
 
     // Dummy cards to please max detecting
-    Card playerMax = new Card(0,0);
+    Card humanMax = new Card(0,0);
     Card computerMax = new Card(0,0);
 
     for(var card in human.hand){
-      if(card>playerMax){
-        playerMax = card;
+      if(card>humanMax){
+        humanMax = card;
       }
     }
 
@@ -202,14 +195,14 @@ class Game {
       }
     }
 
-    if(playerMax>computerMax){
-      return {"humanWinner":true,"reason":"You have a higher High Card"};
+    if(humanMax>computerMax){
+      return {"humanWinner":true,"reason":"you have a higher High Card"};
     }
     else{
-      return {"humanWinner":false,"reason":"You have a lower High Card"};
+      return {"humanWinner":false,"reason":"you have a lower High Card"};
     }
-
   }
+
   Map comparePair() {
     Map playerPair= new Map();
     for (var card in human.hand){
@@ -225,8 +218,7 @@ class Game {
     for (var card in computer.hand){
       if(computerPair[card.r]==null){
         computerPair[card.r]=[card];
-      }
-      else{
+      } else {
         computerPair[card.r].add(card);
       }
     }
@@ -251,23 +243,132 @@ class Game {
 
 
     if(playerPairRank>computerPairRank){
-      return {"humanWinner":true,"reason":"You have a higher Pair."};
+      return {"humanWinner":true,"reason":"you have a higher Pair."};
     }
     else if(playerPairRank<computerPairRank){
-      return {"humanWinner":false,"reason":"You have a lower Pair."};
+      return {"humanWinner":false,"reason":"you have a lower Pair."};
     }
     else{
-      bool isSpades = false;
+      bool hasSpades = false;
       for (var searchSpades in playerPairValue){
-        if(searchSpades.s==3) isSpades = true;
+        if(searchSpades.s==3) hasSpades = true;
       }
-      if(isSpades) {
-        return {"humanWinner":true,"reason":"You have the card of Spades."};
+      if(hasSpades) {
+        return {"humanWinner":true,"reason":"you have the card of Spades."};
       }
-      return {"humanWinner":false,"reason":"Computer has the card of Spades."};
+      return {"humanWinner":false,"reason":"computer has the card of Spades."};
     }
   }
 
+  Map compareTwoPairs() {
+    bool hasSpades = false;
+    Map humanMap = {};
+    Map computerMap = {};
+    List<int> humanTwoPairs = [];
+    List<int> computerTwoPairs = [];
+
+    //TODO: group these loops
+    for(var card in human.hand) {
+      if(humanMap[card.r.toString()]==null) humanMap[card.r.toString()]=1;
+      else humanMap[card.r.toString()]++;
+    }
+
+    for(var card in computer.hand) {
+      if(computerMap[card.r.toString()]==null) computerMap[card.r.toString()]=1;
+      else computerMap[card.r.toString()]++;
+    }
+
+    humanMap.forEach((k,v){
+      if(v==2){
+        humanTwoPairs.add(k);
+      }
+    });
+
+    computerMap.forEach((k,v){
+      if(v==2){
+        computerTwoPairs.add(k);
+      }
+    });
+
+    humanTwoPairs.sort();
+    computerTwoPairs.sort();
+
+   //TODO: clear
+   int humanMin = int.parse(humanTwoPairs[0].toString());
+   int computerMin = int.parse(computerTwoPairs[0].toString());
+   int humanMax = int.parse(humanTwoPairs[1].toString());
+   int computerMax = int.parse(computerTwoPairs[1].toString());
+
+   //TODO: simplify logic
+   if(humanMax > computerMax) {
+      return {"humanWinner":true, "reason":"you have a higher Two Pairs."};
+    } else if(humanMax < computerMax) {
+      return {"humanWinner":false, "reason":"you have a lower Two Pairs."};
+    } else {
+      // same max, check if same min, if not, higher min wins, else look for Spades
+      if(humanMin>computerMin){
+        return {"humanWinner":true, "reason":"you have a higher Two Pairs."};
+      } else if (humanMin<computerMin) {
+        return {"humanWinner":false, "reason":"you have a lower Two Pairs."};
+      } else {
+        // look for Spades
+        for(var card in human.hand) {
+          if(card.r==humanMax){
+            if(card.s==3){
+              hasSpades = true;
+            }
+          }
+        }
+
+        if(!hasSpades){
+          for(var card in human.hand){
+            if(card.r==humanMin){
+              if(card.s==3){
+                hasSpades = true;
+              }
+            }
+          }
+        }
+
+        if(hasSpades){
+          return {"humanWinner":true, "reason":"you have the card of Spades."};
+        }
+        return {"humanWinner":false, "reason":"computer has the card of Spades."};
+      }
+    }
+  }
+
+  Map compareThreeOfAKind() {
+    Map humanMap = {};
+    Map computerMap = {};
+    int humanThreeOfAKindValue;
+    int computerThreeOfAKindValue;
+
+    //TODO: group these loops
+    for(var card in human.hand) {
+      if(humanMap[card.r.toString()]==null) humanMap[card.r.toString()]=1;
+      else humanMap[card.r.toString()]++;
+    }
+
+    for(var card in computer.hand) {
+      if(computerMap[card.r.toString()]==null) computerMap[card.r.toString()]=1;
+      else computerMap[card.r.toString()]++;
+    }
+
+    humanMap.forEach((k,v){
+      if(v==3) humanThreeOfAKindValue = int.parse(k);
+    });
+
+    computerMap.forEach((k,v){
+      if(v==3) computerThreeOfAKindValue = int.parse(k);
+    });
+
+    if(humanThreeOfAKindValue>computerThreeOfAKindValue) {
+      return {"humanWinner":true, "reason":"you have a higher Three Of A Kind."};
+    }
+    return {"humanWinner":false, "reason":"you have a lower Three Of A Kind."};
+
+  }
   // State switchers
   void state0() {
     Gui.init(this);
@@ -295,7 +396,6 @@ class Game {
 
     // fill the hand with new cards
     serveHand(human);
-    print(human.hand);
     evaluateHand(human);
     state3();
   }
@@ -306,10 +406,10 @@ class Game {
     Gui.showCards(this, showdown:true);
     Gui.resetCardPosition();
     Gui.hideShowdownButton();
-    Gui.updateStatusBar('You have a <b>${human.handValue}</b>.');
+    Gui.updateStatusBar('You have a <b>${human.handValue}</b>,'
+      ' computer has a <b>${computer.handValue}</b>: '
+      '${Gui.generateVerboseVerdict(this.compareHands())}');
   }
-
-
 }
 
 class Card {
@@ -319,7 +419,6 @@ class Card {
 
   var suiteNames = ['Clubs','Diamonds','Hearts','Spades'];
   var rankNames = ['None','None', '2', '3', '4', '5', '6', '7','8', '9', '10', 'Jack', 'Queen', 'King','Ace'];
-
 
   Card(this.s,this.r) { }
 
@@ -363,11 +462,11 @@ class Card {
 }
 
 class Player{
-  String name;
+  // String name;
   bool human;
   List<Card> hand = [];
   List<Card> changing = [];
   String handValue;
-  int pot = 10000;
   int encHand;
+  //TODO: Map
 }
