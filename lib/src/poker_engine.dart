@@ -104,7 +104,8 @@ class Game {
   }
 
   void allOnes(Player player){
-    List R = [player.hand[0].r,player.hand[1].r,player.hand[2].r,player.hand[3].r,player.hand[4].r];
+    List R = [player.hand[0].r,player.hand[1].r,player.hand[2].r,
+      player.hand[3].r,player.hand[4].r];
     R.sort();
 
     if(R[4]==R[0]+4){
@@ -141,7 +142,8 @@ class Game {
 
 
   bool isFlush(Player player){
-    List allSuites = [player.hand[0].s,player.hand[1].s,player.hand[2].s,player.hand[3].s,player.hand[4].s];
+    List allSuites = [player.hand[0].s,player.hand[1].s,player.hand[2].s,
+      player.hand[3].s,player.hand[4].s];
     for(var i=0;i<allSuites.length-1;i++){
       if(allSuites[i]!=allSuites[i+1]){
         return false;
